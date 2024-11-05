@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+package ExecutionEngine;
+
+option go_package = "proto/job";
+
+service Job {
+  rpc Submit(JobRequest) returns (JobResponse);
+}
+
+message ResourceLimits {
+  int64 max_execution_time = 1; // in milliseconds
+  int64 max_memory = 2;         // in bytes
+  int64 max_output_size = 3;    // in bytes
+}
+
+message ResourceStatistics {
+  int64 execution_time = 12;    // in milliseconds
+  int64 max_memory_used = 13;   // in bytes
+}
+
+message JobRequest {
+  string source_code_file_name = 1;
+  string source_code = 2;
+  string setup_script = 3;
+  string compile_script = 4;
+  string run_script = 5;
+  string stdin = 6;
+  repeated string environment_variables = 7;
+  ResourceLimits resource_limits = 8;
+}
+
+message JobResponse {
+  string status = 1;
+  string error_string = 2;
+  string setup_stdout = 3;
+  string setup_stderr = 4;
+  int32 setup_exit_code = 5;
+  string compile_stdout = 6;
+  string compile_stderr = 7;
+  int32 compile_exit_code = 8;
+  string run_stdout = 9;
+  string run_stderr = 10;
+  int32 run_exit_code = 11;
+  ResourceStatistics resource_statistics = 12;
+}
